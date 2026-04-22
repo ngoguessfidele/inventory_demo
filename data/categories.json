@@ -1,0 +1,17 @@
+[
+  {
+    "id": "cat-1",
+    "name": "Beverages",
+    "description": "Drinks and refreshments"
+  },
+  {
+    "id": "cat-2",
+    "name": "Snacks",
+    "description": "Packaged snack products"
+  },
+  {
+    "id": "cat-3",
+    "name": "Household",
+    "description": "Cleaning and home essentials"
+  }
+]

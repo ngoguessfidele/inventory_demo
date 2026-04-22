@@ -1,0 +1,41 @@
+[
+  {
+    "id": "prd-1",
+    "name": "Orange Juice 1L",
+    "category": "Beverages",
+    "sku": "BEV-OJ-1L",
+    "quantity": 31,
+    "unit": "bottle",
+    "costPrice": 1.2,
+    "sellingPrice": 1.9,
+    "lowStockThreshold": 10,
+    "createdAt": "2026-04-22T17:32:45.710Z",
+    "updatedAt": "2026-04-22T19:33:50.434Z"
+  },
+  {
+    "id": "prd-2",
+    "name": "Potato Chips 100g",
+    "category": "Snacks",
+    "sku": "SNK-CHIPS-100",
+    "quantity": 22,
+    "unit": "pack",
+    "costPrice": 0.45,
+    "sellingPrice": 0.85,
+    "lowStockThreshold": 8,
+    "createdAt": "2026-04-22T17:32:45.710Z",
+    "updatedAt": "2026-04-22T19:35:26.598Z"
+  },
+  {
+    "id": "prd-3",
+    "name": "Dish Soap 500ml",
+    "category": "Household",
+    "sku": "HOU-DS-500",
+    "quantity": 25,
+    "unit": "bottle",
+    "costPrice": 1.1,
+    "sellingPrice": 1.7,
+    "lowStockThreshold": 6,
+    "createdAt": "2026-04-22T17:32:45.710Z",
+    "updatedAt": "2026-04-22T19:34:06.345Z"
+  }
+]

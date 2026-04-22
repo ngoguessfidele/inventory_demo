@@ -1,65 +1,164 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useMemo, useState } from "react";
+import type { ComponentType } from "react";
+import { AlertTriangle, Boxes, DollarSign, Tags } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
+import { Table } from "@/components/ui/table";
+import type { Adjustment, Category, Product } from "@/types";
+
+interface SummaryCardProps {
+  title: string;
+  value: string;
+  icon: ComponentType<{ className?: string }>;
+}
+
+function SummaryCard({ title, value, icon: Icon }: SummaryCardProps) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-slate-500">{title}</p>
+        <Icon className="h-5 w-5 text-slate-500" />
+      </div>
+      <p className="mt-4 text-3xl font-bold text-slate-900">{value}</p>
+    </article>
+  );
+}
+
+export default function DashboardPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [adjustments, setAdjustments] = useState<Adjustment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadDashboard() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [productsRes, categoriesRes, adjustmentsRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/categories"),
+          fetch("/api/adjustments"),
+        ]);
+
+        if (!productsRes.ok || !categoriesRes.ok || !adjustmentsRes.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
+
+        const [productsData, categoriesData, adjustmentsData] = await Promise.all([
+          productsRes.json(),
+          categoriesRes.json(),
+          adjustmentsRes.json(),
+        ]);
+
+        setProducts(productsData);
+        setCategories(categoriesData);
+        setAdjustments(adjustmentsData);
+      } catch (requestError) {
+        setError(requestError instanceof Error ? requestError.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDashboard();
+  }, []);
+
+  const lowStockCount = useMemo(
+    () => products.filter((item) => item.quantity <= item.lowStockThreshold).length,
+    [products]
+  );
+
+  const totalInventoryValue = useMemo(
+    () => products.reduce((sum, item) => sum + item.quantity * item.costPrice, 0),
+    [products]
+  );
+
+  const adjustmentByProduct = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const item of adjustments) {
+      const current = map.get(item.productId) ?? 0;
+      map.set(
+        item.productId,
+        item.type === "in" ? current + item.quantity : current - item.quantity
+      );
+    }
+    return map;
+  }, [adjustments]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-rose-700">{error}</p>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+        <p className="text-sm text-slate-600">
+          Real-time overview of stock levels, inventory value, and activity.
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <SummaryCard title="Total Products" value={String(products.length)} icon={Boxes} />
+        <SummaryCard title="Low Stock Alerts" value={String(lowStockCount)} icon={AlertTriangle} />
+        <SummaryCard
+          title="Inventory Value"
+          value={`$${totalInventoryValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+          icon={DollarSign}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <SummaryCard title="Categories" value={String(categories.length)} icon={Tags} />
+      </div>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Stock Overview</h2>
+        <Table headers={["Product", "SKU", "Quantity", "Low Stock Threshold", "Status", "Movement"]}>
+          {products.length === 0 ? (
+            <tr>
+              <td className="px-4 py-6 text-center text-slate-500" colSpan={6}>
+                No products available.
+              </td>
+            </tr>
+          ) : (
+            products.slice(0, 8).map((product) => {
+              const isLowStock = product.quantity <= product.lowStockThreshold;
+              const netMovement = adjustmentByProduct.get(product.id) ?? 0;
+              return (
+                <tr key={product.id}>
+                  <td className="px-4 py-3 text-sm font-medium text-slate-900">{product.name}</td>
+                  <td className="px-4 py-3 text-sm text-slate-600">{product.sku}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    {product.quantity} {product.unit}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-700">{product.lowStockThreshold}</td>
+                  <td className="px-4 py-3 text-sm">
+                    {isLowStock ? (
+                      <Badge label="Low Stock" variant="danger" />
+                    ) : (
+                      <Badge label="Healthy" variant="success" />
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    {netMovement > 0 ? `+${netMovement}` : netMovement}
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </Table>
+      </section>
     </div>
   );
 }
