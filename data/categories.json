@@ -1,5 +1,10 @@
 [
   {
+    "id": "f9c4774f-f193-480d-8d6e-1a19ef6de65f",
+    "name": "Insulators",
+    "description": "Insulators"
+  },
+  {
     "id": "8541b33f-c350-41ab-ba47-a196c7ca6e67",
     "name": "Lighting",
     "description": "Light"

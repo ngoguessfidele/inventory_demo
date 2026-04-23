@@ -1,5 +1,44 @@
 [
   {
+    "id": "b91277ce-570b-42cd-bc5b-5f8ac7a39de1",
+    "name": "Long Wires",
+    "category": "Wiring",
+    "sku": "WIR-0002",
+    "unit": "metter",
+    "quantity": 2,
+    "costPrice": 1,
+    "sellingPrice": 2,
+    "lowStockThreshold": 3,
+    "createdAt": "2026-04-23T12:56:16.773Z",
+    "updatedAt": "2026-04-23T12:56:16.773Z"
+  },
+  {
+    "id": "4c5a991d-96b5-4f7c-9ca2-148702370af8",
+    "name": "Insulator",
+    "category": "Insulators",
+    "sku": "INS-0001",
+    "unit": "metter",
+    "quantity": 4,
+    "costPrice": 2,
+    "sellingPrice": 3,
+    "lowStockThreshold": 5,
+    "createdAt": "2026-04-23T12:50:56.729Z",
+    "updatedAt": "2026-04-23T12:53:20.074Z"
+  },
+  {
+    "id": "8200c8be-b017-4aea-893f-901bbe44beea",
+    "name": "Wire",
+    "category": "Wiring",
+    "sku": "WIR-0001",
+    "unit": "metter",
+    "quantity": 5,
+    "costPrice": 3,
+    "sellingPrice": 4,
+    "lowStockThreshold": 6,
+    "createdAt": "2026-04-23T12:41:44.336Z",
+    "updatedAt": "2026-04-23T12:41:44.336Z"
+  },
+  {
     "id": "0e4d2d6a-344f-43bd-84b3-f3e68160dc91",
     "name": "Lamp",
     "category": "Lighting",
