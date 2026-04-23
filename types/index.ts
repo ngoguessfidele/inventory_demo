@@ -53,3 +53,34 @@ export interface AdjustmentInput {
   date?: string;
 }
 
+export interface SaleItem {
+  productId: string;
+  productName: string;
+  sku: string;
+  quantity: number;
+  unitPrice: number;
+  costPrice: number;
+  subtotal: number;
+}
+
+export interface Sale {
+  id: string;
+  saleNumber: string;
+  date: string;
+  items: SaleItem[];
+  totalAmount: number;
+  totalCost: number;
+  profit: number;
+  notes?: string;
+}
+
+export interface SaleInputItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface SaleInput {
+  items: SaleInputItem[];
+  notes?: string;
+}
+

@@ -1,11 +1,12 @@
 import { access, mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
-import type { Adjustment, Category, Product } from "@/types";
+import type { Adjustment, Category, Product, Sale } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const CATEGORIES_FILE = path.join(DATA_DIR, "categories.json");
 const ADJUSTMENTS_FILE = path.join(DATA_DIR, "adjustments.json");
+const SALES_FILE = path.join(DATA_DIR, "sales.json");
 
 const now = new Date().toISOString();
 
@@ -76,6 +77,8 @@ const seededAdjustments: Adjustment[] = [
   },
 ];
 
+const seededSales: Sale[] = [];
+
 async function ensureFile(filePath: string, seedData: unknown): Promise<void> {
   try {
     await access(filePath);
@@ -90,6 +93,7 @@ export async function ensureDataFiles(): Promise<void> {
     ensureFile(PRODUCTS_FILE, seededProducts),
     ensureFile(CATEGORIES_FILE, seededCategories),
     ensureFile(ADJUSTMENTS_FILE, seededAdjustments),
+    ensureFile(SALES_FILE, seededSales),
   ]);
 }
 
@@ -126,5 +130,13 @@ export async function getAdjustments(): Promise<Adjustment[]> {
 
 export async function saveAdjustments(adjustments: Adjustment[]): Promise<void> {
   await writeJsonFile(ADJUSTMENTS_FILE, adjustments);
+}
+
+export async function getSales(): Promise<Sale[]> {
+  return readJsonFile<Sale[]>(SALES_FILE);
+}
+
+export async function saveSales(sales: Sale[]): Promise<void> {
+  await writeJsonFile(SALES_FILE, sales);
 }
 

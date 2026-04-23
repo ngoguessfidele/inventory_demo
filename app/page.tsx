@@ -2,11 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
-import { AlertTriangle, Boxes, DollarSign, Tags } from "lucide-react";
+import { AlertTriangle, Boxes, DollarSign, Receipt, Tags, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { Table } from "@/components/ui/table";
-import type { Adjustment, Category, Product } from "@/types";
+import type { Adjustment, Category, Product, Sale } from "@/types";
+
+interface SalesResponse {
+  data: Sale[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 interface SummaryCardProps {
   title: string;
@@ -30,6 +40,8 @@ export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [adjustments, setAdjustments] = useState<Adjustment[]>([]);
+  const [sales, setSales] = useState<Sale[]>([]);
+  const [totalSalesCount, setTotalSalesCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,25 +51,29 @@ export default function DashboardPage() {
       setError(null);
 
       try {
-        const [productsRes, categoriesRes, adjustmentsRes] = await Promise.all([
+        const [productsRes, categoriesRes, adjustmentsRes, salesRes] = await Promise.all([
           fetch("/api/products"),
           fetch("/api/categories"),
           fetch("/api/adjustments"),
+          fetch("/api/sales?page=1&limit=100000"),
         ]);
 
-        if (!productsRes.ok || !categoriesRes.ok || !adjustmentsRes.ok) {
+        if (!productsRes.ok || !categoriesRes.ok || !adjustmentsRes.ok || !salesRes.ok) {
           throw new Error("Failed to fetch dashboard data");
         }
 
-        const [productsData, categoriesData, adjustmentsData] = await Promise.all([
+        const [productsData, categoriesData, adjustmentsData, salesData] = await Promise.all([
           productsRes.json(),
           categoriesRes.json(),
           adjustmentsRes.json(),
+          salesRes.json(),
         ]);
 
         setProducts(productsData);
         setCategories(categoriesData);
         setAdjustments(adjustmentsData);
+        setSales((salesData as SalesResponse).data);
+        setTotalSalesCount((salesData as SalesResponse).pagination.total);
       } catch (requestError) {
         setError(requestError instanceof Error ? requestError.message : "Unknown error");
       } finally {
@@ -90,6 +106,31 @@ export default function DashboardPage() {
     return map;
   }, [adjustments]);
 
+  const todaySalesMetrics = useMemo(() => {
+    const today = new Date();
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const end = start + 24 * 60 * 60 * 1000;
+
+    const todaysSales = sales.filter((sale) => {
+      const time = new Date(sale.date).getTime();
+      return time >= start && time < end;
+    });
+
+    const revenue = todaysSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const profit = todaysSales.reduce((sum, sale) => sum + sale.profit, 0);
+
+    return {
+      revenue,
+      profit,
+    };
+  }, [sales]);
+
+  const recentSales = useMemo(() => {
+    return [...sales]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 5);
+  }, [sales]);
+
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
@@ -120,6 +161,20 @@ export default function DashboardPage() {
           icon={DollarSign}
         />
         <SummaryCard title="Categories" value={String(categories.length)} icon={Tags} />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <SummaryCard title="Total Sales" value={String(totalSalesCount)} icon={Receipt} />
+        <SummaryCard
+          title="Revenue Today"
+          value={`$${todaySalesMetrics.revenue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+          icon={DollarSign}
+        />
+        <SummaryCard
+          title="Profit Today"
+          value={`$${todaySalesMetrics.profit.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+          icon={TrendingUp}
+        />
       </div>
 
       <section className="space-y-3">
@@ -156,6 +211,31 @@ export default function DashboardPage() {
                 </tr>
               );
             })
+          )}
+        </Table>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">Recent Sales</h2>
+        <Table headers={["Sale #", "Date", "Items", "Total", "Profit"]}>
+          {recentSales.length === 0 ? (
+            <tr>
+              <td className="px-4 py-6 text-center text-slate-500" colSpan={5}>
+                No sales recorded yet.
+              </td>
+            </tr>
+          ) : (
+            recentSales.map((sale) => (
+              <tr key={sale.id}>
+                <td className="px-4 py-3 text-sm font-medium text-slate-900">{sale.saleNumber}</td>
+                <td className="px-4 py-3 text-sm text-slate-700">
+                  {new Date(sale.date).toLocaleString()}
+                </td>
+                <td className="px-4 py-3 text-sm text-slate-700">{sale.items.length}</td>
+                <td className="px-4 py-3 text-sm text-slate-700">${sale.totalAmount.toFixed(2)}</td>
+                <td className="px-4 py-3 text-sm text-emerald-700">${sale.profit.toFixed(2)}</td>
+              </tr>
+            ))
           )}
         </Table>
       </section>

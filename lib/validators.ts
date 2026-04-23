@@ -2,6 +2,8 @@ import type {
   AdjustmentInput,
   CategoryInput,
   ProductInput,
+  SaleInput,
+  SaleInputItem,
 } from "@/types";
 
 interface ValidationResult<T> {
@@ -145,6 +147,57 @@ export function validateAdjustmentInput(
       quantity: quantityResult.value!,
       reason: reason!,
       date: parsedDate.toISOString(),
+    },
+    errors: [],
+  };
+}
+
+export function validateSaleInput(payload: unknown): ValidationResult<SaleInput> {
+  const errors: string[] = [];
+  const input = payload as Record<string, unknown>;
+
+  const rawItems = Array.isArray(input?.items) ? input.items : null;
+  if (!rawItems || rawItems.length === 0) {
+    errors.push("At least one sale item is required");
+  }
+
+  const items: SaleInputItem[] = [];
+  if (rawItems) {
+    for (const rawItem of rawItems) {
+      const item = rawItem as Record<string, unknown>;
+      const productId = asNonEmptyString(item?.productId, "Product");
+      const quantityResult = asNumber(item?.quantity, "Quantity");
+
+      if (!productId) {
+        errors.push("Each item must include a product");
+        continue;
+      }
+      if (quantityResult.error) {
+        errors.push(quantityResult.error);
+        continue;
+      }
+      if ((quantityResult.value ?? 0) <= 0) {
+        errors.push("Quantity must be greater than 0");
+        continue;
+      }
+
+      items.push({
+        productId,
+        quantity: quantityResult.value!,
+      });
+    }
+  }
+
+  const notes = asOptionalString(input?.notes);
+
+  if (errors.length > 0) {
+    return { errors };
+  }
+
+  return {
+    data: {
+      items,
+      notes,
     },
     errors: [],
   };

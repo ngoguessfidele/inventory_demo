@@ -1,5 +1,45 @@
 [
   {
+    "id": "d6b15636-b352-4a4b-949c-b1fc3fdb3717",
+    "productId": "4c5a991d-96b5-4f7c-9ca2-148702370af8",
+    "type": "out",
+    "quantity": 3,
+    "reason": "Sale - SALE-0005",
+    "date": "2026-04-23T14:49:19.596Z"
+  },
+  {
+    "id": "ecc4fb2c-bfbf-4492-877b-942ad038533a",
+    "productId": "b91277ce-570b-42cd-bc5b-5f8ac7a39de1",
+    "type": "out",
+    "quantity": 1,
+    "reason": "Sale - SALE-0004",
+    "date": "2026-04-23T14:46:39.812Z"
+  },
+  {
+    "id": "cc1a6ffe-90b8-4318-91e4-6881fe9c90c0",
+    "productId": "8200c8be-b017-4aea-893f-901bbe44beea",
+    "type": "out",
+    "quantity": 1,
+    "reason": "Sale - SALE-0003",
+    "date": "2026-04-23T14:45:49.450Z"
+  },
+  {
+    "id": "35b7b3d8-41c4-4286-8bef-e9c4187a7b96",
+    "productId": "8200c8be-b017-4aea-893f-901bbe44beea",
+    "type": "out",
+    "quantity": 1,
+    "reason": "Sale - SALE-0002",
+    "date": "2026-04-23T14:45:12.443Z"
+  },
+  {
+    "id": "3467d5b6-bbec-40c9-bfc0-8e1f1da1867d",
+    "productId": "b91277ce-570b-42cd-bc5b-5f8ac7a39de1",
+    "type": "out",
+    "quantity": 1,
+    "reason": "Sale - SALE-0001",
+    "date": "2026-04-23T14:44:23.685Z"
+  },
+  {
     "id": "1c725133-99d9-4ed1-8476-5ffe643e6e07",
     "productId": "4c5a991d-96b5-4f7c-9ca2-148702370af8",
     "type": "in",
