@@ -16,6 +16,10 @@ function asNonEmptyString(value: unknown, field: string): string | null {
   return value.trim();
 }
 
+function asOptionalString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function asNumber(value: unknown, field: string): { value?: number; error?: string } {
   const numberValue = Number(value);
   if (!Number.isFinite(numberValue)) {
@@ -34,8 +38,7 @@ export function validateProductInput(payload: unknown): ValidationResult<Product
   const category = asNonEmptyString(input?.category, "Category");
   if (!category) errors.push("Category is required");
 
-  const sku = asNonEmptyString(input?.sku, "SKU");
-  if (!sku) errors.push("SKU is required");
+  const sku = asOptionalString(input?.sku);
 
   const unit = asNonEmptyString(input?.unit, "Unit");
   if (!unit) errors.push("Unit is required");
@@ -66,7 +69,7 @@ export function validateProductInput(payload: unknown): ValidationResult<Product
     data: {
       name: name!,
       category: category!,
-      sku: sku!,
+      sku,
       unit: unit!,
       quantity: quantityResult.value!,
       costPrice: costResult.value!,

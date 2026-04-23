@@ -44,8 +44,11 @@ export async function PUT(request: Request, context: RouteParams) {
       return Response.json({ error: "Product not found" }, { status: 404 });
     }
 
+    const requestedSku = data.sku.trim();
+    const nextSku = requestedSku.length > 0 ? requestedSku : existingProduct.sku;
+
     const duplicateSku = products.find(
-      (item) => item.id !== id && item.sku.toLowerCase() === data.sku.toLowerCase()
+      (item) => item.id !== id && item.sku.toLowerCase() === nextSku.toLowerCase()
     );
     if (duplicateSku) {
       return Response.json({ error: "SKU already exists" }, { status: 409 });
@@ -54,6 +57,7 @@ export async function PUT(request: Request, context: RouteParams) {
     const updatedProduct: Product = {
       ...existingProduct,
       ...data,
+      sku: nextSku,
       updatedAt: new Date().toISOString(),
     };
 

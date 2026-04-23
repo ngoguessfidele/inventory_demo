@@ -129,7 +129,6 @@ export default function ProductsPage() {
     const errors: string[] = [];
     if (!input.name.trim()) errors.push("Name is required");
     if (!input.category.trim()) errors.push("Category is required");
-    if (!input.sku.trim()) errors.push("SKU is required");
     if (!input.unit.trim()) errors.push("Unit is required");
     if (input.quantity < 0) errors.push("Quantity cannot be negative");
     if (input.costPrice < 0) errors.push("Cost price cannot be negative");
@@ -378,10 +377,11 @@ export default function ProductsPage() {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-slate-700">SKU</span>
+              <span className="text-sm font-medium text-slate-700">SKU (optional)</span>
               <input
                 value={form.sku}
                 onChange={(event) => setForm((prev) => ({ ...prev, sku: event.target.value }))}
+                placeholder={editingProduct ? "Leave blank to keep current SKU" : "Leave blank to auto-generate"}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none ring-slate-300 focus:ring-2"
               />
             </label>

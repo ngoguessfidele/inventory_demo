@@ -1,17 +1,12 @@
 [
   {
-    "id": "cat-1",
-    "name": "Beverages",
-    "description": "Drinks and refreshments"
+    "id": "8541b33f-c350-41ab-ba47-a196c7ca6e67",
+    "name": "Lighting",
+    "description": "Light"
   },
   {
-    "id": "cat-2",
-    "name": "Snacks",
-    "description": "Packaged snack products"
-  },
-  {
-    "id": "cat-3",
-    "name": "Household",
-    "description": "Cleaning and home essentials"
+    "id": "1cceb85e-3c44-414a-a046-c110cec7716e",
+    "name": "Wiring",
+    "description": "Wiring"
   }
 ]

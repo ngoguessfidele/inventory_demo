@@ -1,4 +1,5 @@
 import { getProducts, saveProducts } from "@/lib/data-store";
+import { generateSku } from "@/lib/sku";
 import { validateProductInput } from "@/lib/validators";
 import type { Product } from "@/types";
 
@@ -26,8 +27,11 @@ export async function POST(request: Request) {
     }
 
     const products = await getProducts();
+    const requestedSku = data.sku.trim();
+    const nextSku = requestedSku.length > 0 ? requestedSku : generateSku(products, data.category);
+
     const duplicateSku = products.find(
-      (product) => product.sku.toLowerCase() === data.sku.toLowerCase()
+      (product) => product.sku.toLowerCase() === nextSku.toLowerCase()
     );
 
     if (duplicateSku) {
@@ -38,6 +42,7 @@ export async function POST(request: Request) {
     const newProduct: Product = {
       id: crypto.randomUUID(),
       ...data,
+      sku: nextSku,
       createdAt: now,
       updatedAt: now,
     };
