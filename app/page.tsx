@@ -17,7 +17,7 @@ interface SalesResponse {
     limit: number;
     total: number;
     totalPages: number;
-  };
+  }; 
 }
 
 interface SummaryCardProps {
