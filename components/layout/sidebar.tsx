@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AlertTriangle, ArrowLeftRight, Boxes, LayoutDashboard, ShoppingCart, Tags } from "lucide-react";
+import { ThemeToggleButton } from "./theme-toggle-button";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -19,8 +20,13 @@ export function Sidebar() {
   return (
     <aside className="w-full border-b border-slate-200 bg-white lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
       <div className="border-b border-slate-200 px-5 py-5">
-        <h1 className="text-xl font-bold text-slate-900">Inventory Pro</h1>
-        <p className="text-sm text-slate-500">Management System</p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">Inventory Pro</h1>
+            <p className="text-sm text-slate-500">Management System</p>
+          </div>
+          <ThemeToggleButton />
+        </div>
       </div>
       <nav className="grid grid-cols-2 gap-2 p-3 lg:grid-cols-1 lg:p-4">
         {navItems.map(({ href, label, icon: Icon }) => {
