@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Search, ShoppingCart, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { formatCurrency } from "@/lib/currency";
 import type { Product } from "@/types";
 
 interface CartItem {
@@ -197,7 +198,7 @@ export default function NewSalePage() {
                       <div>
                         <p className="text-sm font-medium text-slate-900">{product.name}</p>
                         <p className="text-xs text-slate-500">
-                          {product.sku} | In stock: {product.quantity} {product.unit} | ${product.sellingPrice.toFixed(2)}
+                          {product.sku} | In stock: {product.quantity} {product.unit} | {formatCurrency(product.sellingPrice)}
                         </p>
                       </div>
                       <button
@@ -235,7 +236,7 @@ export default function NewSalePage() {
                       <div>
                         <p className="text-sm font-medium text-slate-900">{item.product.name}</p>
                         <p className="text-xs text-slate-500">
-                          {item.product.sku} | ${item.product.sellingPrice.toFixed(2)} each
+                          {item.product.sku} | {formatCurrency(item.product.sellingPrice)} each
                         </p>
                       </div>
                       <button
@@ -263,7 +264,7 @@ export default function NewSalePage() {
                         />
                       </label>
                       <p className="text-sm font-semibold text-slate-900">
-                        ${item.subtotal.toFixed(2)}
+                        {formatCurrency(item.subtotal)}
                       </p>
                     </div>
                   </div>
@@ -285,15 +286,15 @@ export default function NewSalePage() {
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
               <div className="flex items-center justify-between text-slate-600">
                 <span>Total Amount</span>
-                <strong className="text-slate-900">${totals.totalAmount.toFixed(2)}</strong>
+                <strong className="text-slate-900">{formatCurrency(totals.totalAmount)}</strong>
               </div>
               <div className="mt-1 flex items-center justify-between text-slate-600">
                 <span>Total Cost</span>
-                <strong className="text-slate-900">${totals.totalCost.toFixed(2)}</strong>
+                <strong className="text-slate-900">{formatCurrency(totals.totalCost)}</strong>
               </div>
               <div className="mt-1 flex items-center justify-between text-emerald-700">
                 <span>Profit</span>
-                <strong>${totals.profit.toFixed(2)}</strong>
+                <strong>{formatCurrency(totals.profit)}</strong>
               </div>
             </div>
 

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Search, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Table } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency";
 import type { Sale } from "@/types";
 
 const PAGE_SIZE = 10;
@@ -129,7 +130,7 @@ export default function SalesPage() {
         </div>
       ) : (
         <>
-          <Table headers={["Sale #", "Date", "Items", "Total", "Profit", "Actions"]}>
+          <Table headers={["Sale #", "Date", "Items", "Total (RWF)", "Profit (RWF)", "Actions"]}>
             {sales.length === 0 ? (
               <tr>
                 <td className="px-4 py-6 text-center text-slate-500" colSpan={6}>
@@ -148,8 +149,8 @@ export default function SalesPage() {
                     {new Date(sale.date).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-700">{sale.items.length}</td>
-                  <td className="px-4 py-3 text-sm text-slate-700">${sale.totalAmount.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-sm text-emerald-700">${sale.profit.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(sale.totalAmount)}</td>
+                  <td className="px-4 py-3 text-sm text-emerald-700">{formatCurrency(sale.profit)}</td>
                   <td className="px-4 py-3 text-sm" onClick={(event) => event.stopPropagation()}>
                     <button
                       type="button"

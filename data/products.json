@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": "2c14e14a-7a40-47fa-8370-6da1a97d315d",
+    "name": "Product 2",
+    "category": "Second",
+    "sku": "SEC-0001",
+    "unit": "box",
+    "quantity": 50,
+    "costPrice": 1000,
+    "sellingPrice": 1500,
+    "lowStockThreshold": 60,
+    "createdAt": "2026-04-24T06:35:26.965Z",
+    "updatedAt": "2026-04-24T06:55:02.357Z"
+  },
+  {
+    "id": "71ebfc1b-4849-48ad-96b4-5752a64ad908",
+    "name": "Product 1",
+    "category": "First",
+    "sku": "FIR-0001",
+    "unit": "m",
+    "quantity": 10,
+    "costPrice": 5000,
+    "sellingPrice": 6000,
+    "lowStockThreshold": 7,
+    "createdAt": "2026-04-24T06:33:06.366Z",
+    "updatedAt": "2026-04-24T06:33:06.366Z"
+  }
+]

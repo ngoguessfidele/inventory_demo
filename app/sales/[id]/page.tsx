@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Table } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency";
 import type { Sale } from "@/types";
 
 export default function SaleDetailPage() {
@@ -125,15 +126,15 @@ export default function SaleDetailPage() {
         </section>
       )}
 
-      <Table headers={["Product", "SKU", "Qty", "Unit Price", "Cost Price", "Subtotal"]}>
+      <Table headers={["Product", "SKU", "Qty", "Unit Price (RWF)", "Cost Price (RWF)", "Subtotal (RWF)"]}>
         {sale.items.map((item) => (
           <tr key={item.productId}>
             <td className="px-4 py-3 text-sm font-medium text-slate-900">{item.productName}</td>
             <td className="px-4 py-3 text-sm text-slate-700">{item.sku}</td>
             <td className="px-4 py-3 text-sm text-slate-700">{item.quantity}</td>
-            <td className="px-4 py-3 text-sm text-slate-700">${item.unitPrice.toFixed(2)}</td>
-            <td className="px-4 py-3 text-sm text-slate-700">${item.costPrice.toFixed(2)}</td>
-            <td className="px-4 py-3 text-sm text-slate-700">${item.subtotal.toFixed(2)}</td>
+            <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(item.unitPrice)}</td>
+            <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(item.costPrice)}</td>
+            <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(item.subtotal)}</td>
           </tr>
         ))}
       </Table>
@@ -141,15 +142,15 @@ export default function SaleDetailPage() {
       <section className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Total Amount</p>
-          <p className="text-lg font-semibold text-slate-900">${sale.totalAmount.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-slate-900">{formatCurrency(sale.totalAmount)}</p>
         </div>
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Total Cost</p>
-          <p className="text-lg font-semibold text-slate-900">${sale.totalCost.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-slate-900">{formatCurrency(sale.totalCost)}</p>
         </div>
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Profit</p>
-          <p className="text-lg font-semibold text-emerald-700">${sale.profit.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-emerald-700">{formatCurrency(sale.profit)}</p>
         </div>
       </section>
     </div>

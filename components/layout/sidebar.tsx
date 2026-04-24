@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeftRight, Boxes, LayoutDashboard, ShoppingCart, Tags } from "lucide-react";
+import { AlertTriangle, ArrowLeftRight, Boxes, LayoutDashboard, ShoppingCart, Tags } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/sales", label: "Sales", icon: ShoppingCart },
   { href: "/products", label: "Products", icon: Boxes },
+  { href: "/alerts", label: "Alerts", icon: AlertTriangle },
   { href: "/categories", label: "Categories", icon: Tags },
   { href: "/adjustments", label: "Stock Adjustments", icon: ArrowLeftRight },
 ];

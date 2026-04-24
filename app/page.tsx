@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
-import { AlertTriangle, Boxes, DollarSign, Receipt, Tags, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, Banknote, Boxes, Receipt, Tags, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { Table } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency";
 import type { Adjustment, Category, Product, Sale } from "@/types";
 
 interface SalesResponse {
@@ -22,17 +24,32 @@ interface SummaryCardProps {
   title: string;
   value: string;
   icon: ComponentType<{ className?: string }>;
+  href?: string;
 }
 
-function SummaryCard({ title, value, icon: Icon }: SummaryCardProps) {
-  return (
-    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+function SummaryCard({ title, value, icon: Icon, href }: SummaryCardProps) {
+  const content = (
+    <article
+      className={`rounded-xl border border-slate-200 bg-white p-5 shadow-sm ${
+        href ? "transition hover:border-slate-300 hover:shadow-md" : ""
+      }`}
+    >
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-500">{title}</p>
         <Icon className="h-5 w-5 text-slate-500" />
       </div>
       <p className="mt-4 text-3xl font-bold text-slate-900">{value}</p>
     </article>
+  );
+
+  if (!href) {
+    return content;
+  }
+
+  return (
+    <Link href={href} className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+      {content}
+    </Link>
   );
 }
 
@@ -153,26 +170,46 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard title="Total Products" value={String(products.length)} icon={Boxes} />
-        <SummaryCard title="Low Stock Alerts" value={String(lowStockCount)} icon={AlertTriangle} />
+        <SummaryCard
+          title="Total Products"
+          value={String(products.length)}
+          icon={Boxes}
+          href="/products"
+        />
+        <SummaryCard
+          title="Low Stock Alerts"
+          value={String(lowStockCount)}
+          icon={AlertTriangle}
+          href="/alerts"
+        />
         <SummaryCard
           title="Inventory Value"
-          value={`$${totalInventoryValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
-          icon={DollarSign}
+          value={formatCurrency(totalInventoryValue)}
+          icon={Banknote}
         />
-        <SummaryCard title="Categories" value={String(categories.length)} icon={Tags} />
+        <SummaryCard
+          title="Categories"
+          value={String(categories.length)}
+          icon={Tags}
+          href="/categories"
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <SummaryCard title="Total Sales" value={String(totalSalesCount)} icon={Receipt} />
+        <SummaryCard
+          title="Total Sales"
+          value={String(totalSalesCount)}
+          icon={Receipt}
+          href="/sales"
+        />
         <SummaryCard
           title="Revenue Today"
-          value={`$${todaySalesMetrics.revenue.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
-          icon={DollarSign}
+          value={formatCurrency(todaySalesMetrics.revenue)}
+          icon={Banknote}
         />
         <SummaryCard
           title="Profit Today"
-          value={`$${todaySalesMetrics.profit.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+          value={formatCurrency(todaySalesMetrics.profit)}
           icon={TrendingUp}
         />
       </div>
@@ -217,7 +254,7 @@ export default function DashboardPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-slate-900">Recent Sales</h2>
-        <Table headers={["Sale #", "Date", "Items", "Total", "Profit"]}>
+        <Table headers={["Sale #", "Date", "Items", "Total (RWF)", "Profit (RWF)"]}>
           {recentSales.length === 0 ? (
             <tr>
               <td className="px-4 py-6 text-center text-slate-500" colSpan={5}>
@@ -232,8 +269,8 @@ export default function DashboardPage() {
                   {new Date(sale.date).toLocaleString()}
                 </td>
                 <td className="px-4 py-3 text-sm text-slate-700">{sale.items.length}</td>
-                <td className="px-4 py-3 text-sm text-slate-700">${sale.totalAmount.toFixed(2)}</td>
-                <td className="px-4 py-3 text-sm text-emerald-700">${sale.profit.toFixed(2)}</td>
+                <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(sale.totalAmount)}</td>
+                <td className="px-4 py-3 text-sm text-emerald-700">{formatCurrency(sale.profit)}</td>
               </tr>
             ))
           )}

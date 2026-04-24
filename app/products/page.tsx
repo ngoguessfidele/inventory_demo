@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { Spinner } from "@/components/ui/spinner";
 import { Table } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/currency";
 import type { Category, Product, ProductInput } from "@/types";
 
 const PAGE_SIZE = 8;
@@ -248,8 +249,8 @@ export default function ProductsPage() {
               "SKU",
               "Category",
               "Quantity",
-              "Cost Price",
-              "Selling Price",
+              "Cost Price (RWF)",
+              "Selling Price (RWF)",
               "Updated",
               "Actions",
             ]}
@@ -276,8 +277,8 @@ export default function ProductsPage() {
                         {lowStock && <Badge label="Low" variant="danger" />}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-700">${product.costPrice.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-sm text-slate-700">${product.sellingPrice.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(product.costPrice)}</td>
+                    <td className="px-4 py-3 text-sm text-slate-700">{formatCurrency(product.sellingPrice)}</td>
                     <td className="px-4 py-3 text-sm text-slate-700">
                       {new Date(product.updatedAt).toLocaleString()}
                     </td>
@@ -407,7 +408,7 @@ export default function ProductsPage() {
               />
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-slate-700">Cost Price</span>
+              <span className="text-sm font-medium text-slate-700">Cost Price (RWF)</span>
               <input
                 type="number"
                 min={0}
@@ -420,7 +421,7 @@ export default function ProductsPage() {
               />
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-slate-700">Selling Price</span>
+              <span className="text-sm font-medium text-slate-700">Selling Price (RWF)</span>
               <input
                 type="number"
                 min={0}
