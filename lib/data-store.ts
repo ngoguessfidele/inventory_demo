@@ -79,6 +79,14 @@ const seededAdjustments: Adjustment[] = [
 
 const seededSales: Sale[] = [];
 
+function getSeedData(filePath: string): unknown {
+  if (filePath === PRODUCTS_FILE) return seededProducts;
+  if (filePath === CATEGORIES_FILE) return seededCategories;
+  if (filePath === ADJUSTMENTS_FILE) return seededAdjustments;
+  if (filePath === SALES_FILE) return seededSales;
+  return [];
+}
+
 async function ensureFile(filePath: string, seedData: unknown): Promise<void> {
   try {
     await access(filePath);
@@ -100,7 +108,20 @@ export async function ensureDataFiles(): Promise<void> {
 async function readJsonFile<T>(filePath: string): Promise<T> {
   await ensureDataFiles();
   const content = await readFile(filePath, "utf-8");
-  return JSON.parse(content) as T;
+
+  if (content.trim().length === 0) {
+    const seedData = getSeedData(filePath);
+    await writeJsonFile(filePath, seedData);
+    return seedData as T;
+  }
+
+  try {
+    return JSON.parse(content) as T;
+  } catch {
+    const seedData = getSeedData(filePath);
+    await writeJsonFile(filePath, seedData);
+    return seedData as T;
+  }
 }
 
 async function writeJsonFile<T>(filePath: string, data: T): Promise<void> {
