@@ -7,7 +7,7 @@ type Theme = "light" | "dark";
 
 function getPreferredTheme(): Theme {
   if (typeof window === "undefined") {
-    return "light";
+    return "dark";
   }
 
   const savedTheme = window.localStorage.getItem("theme");
@@ -15,11 +15,11 @@ function getPreferredTheme(): Theme {
     return savedTheme;
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "dark";
 }
 
 export function ThemeToggleButton() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const nextTheme = getPreferredTheme();
