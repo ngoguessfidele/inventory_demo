@@ -32,7 +32,7 @@ export function ThemeToggleButton() {
     window.localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const isDark = theme === "dark";
+  const isDark = theme === "dark"; 
 
   return (
     <button
